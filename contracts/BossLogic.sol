@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Creator: Chiru Labs
+// Code by @0xGeeLoko
 
 pragma solidity ^0.8.4;
 
