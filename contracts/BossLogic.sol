@@ -4,23 +4,18 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ERC721A.sol";
 import "./ERC2981ContractWideRoyalties.sol";
 
-contract BossLogic is ERC721A, Ownable, ERC2981ContractWideRoyalties {
+contract DropBLU is ERC721A, Ownable, ERC2981ContractWideRoyalties {
     using Strings for uint256;
-    using Counters for Counters.Counter;
 
-    Counters.Counter private supply;
     
-    string public baseTokenUri = "";
-    string public uriSuffix = ".json";
-    //string public hiddenMetadataUri;
+    string public baseTokenUri;
 
     bool public revealed = false;
-    constructor() ERC721A("Boss Logic", "BLU") {}
+    constructor() ERC721A("BLU Drop", "BLU Drop") {}
 
     function mint(address receiver, uint256 amount) public onlyOwner {
         for (uint256 i; i < amount; ) {
