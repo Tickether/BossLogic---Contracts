@@ -14,23 +14,34 @@ contract DropBLU is ERC721A, Ownable, ERC2981ContractWideRoyalties {
     
     string public baseTokenUri;
 
-    bool public revealed = false;
     constructor() ERC721A("BLU Drop", "BLU Drop") {}
 
-    function mint(address receiver, uint256 amount) public onlyOwner {
-        for (uint256 i; i < amount; ) {
-            _mint(receiver, amount);
 
+    modifier isEqual (address[] calldata _to, uint256[] calldata _amount) {
+        require(_to.length == _amount.length, "address/amount lenght mismatch");
+        _;
+    }
+
+    modifier isOverTotal (uint256[] calldata _amount) {
+        uint256 totalAmount;
+        for (uint256 i; i < _amount.length; ) {
+            totalAmount += _amount[i];
             unchecked {
                 i++;
             }
         }
+        require(totalSupply() + totalAmount <= 2000, "max supply hit");
+        _;
     }
 
-    function mintMany(address[] calldata _to, uint256[] calldata _amount) external onlyOwner {
+    function mintMany(address[] calldata _to, uint256[] calldata _amount) 
+        external 
+        onlyOwner
+        isEqual(_to, _amount)
+        isOverTotal(_amount)
+    {
         for (uint256 i; i < _to.length; ) {
             _mint(_to[i], _amount[i]);
-
             unchecked {
                 i++;
             }
