@@ -8,13 +8,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ERC721A.sol";
 import "./ERC2981ContractWideRoyalties.sol";
 
-contract DropBLU is ERC721A, Ownable, ERC2981ContractWideRoyalties {
+contract DrOppenheimer is ERC721A, Ownable, ERC2981ContractWideRoyalties {
     using Strings for uint256;
 
     
     string public baseTokenUri;
 
-    constructor() ERC721A("BLU Drop", "BLU Drop") {}
+    constructor() ERC721A("DrOppenheimer", "DrOppenheimer") {}
 
 
     modifier isEqual (address[] calldata _to, uint256[] calldata _amount) {
@@ -30,7 +30,7 @@ contract DropBLU is ERC721A, Ownable, ERC2981ContractWideRoyalties {
                 i++;
             }
         }
-        require(totalSupply() + totalAmount <= 2000, "max supply hit");
+        require(totalSupply() + totalAmount <= 10000, "max supply hit");
         _;
     }
 
