@@ -16,11 +16,7 @@ contract DrOppenheimer is ERC721A, Ownable, ERC2981ContractWideRoyalties {
 
     constructor() ERC721A("DrOppenheimer", "DrOppenheimer") {}
 
-
-    modifier isEqual (address[] calldata _to, uint256[] calldata _amount) {
-        require(_to.length == _amount.length, "address/amount lenght mismatch");
-        _;
-    }
+    mapping(address => uint256) public drops;
 
     modifier isOverTotal (uint256[] calldata _amount) {
         uint256 totalAmount;
@@ -34,20 +30,33 @@ contract DrOppenheimer is ERC721A, Ownable, ERC2981ContractWideRoyalties {
         _;
     }
 
+    modifier isDroppable (address[] calldata _to) {
+        for (uint256 i; i < _to.length; ) {
+            require(drops[_to[i]] == 0, "one or more wallets already droped"); 
+            unchecked {
+                i++;
+            }
+        }
+        _;
+    }
+
     function mintMany(address[] calldata _to, uint256[] calldata _amount) 
         external 
         onlyOwner
-        isEqual(_to, _amount)
         isOverTotal(_amount)
+        isDroppable(_to)
     {
+        require(_to.length == _amount.length, "address/amount lenght mismatch");
         for (uint256 i; i < _to.length; ) {
             _mint(_to[i], _amount[i]);
+            drops[_to[i]] += _amount[i];
             unchecked {
                 i++;
             }
         }
     }
-
+    
+    /*
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
@@ -68,6 +77,7 @@ contract DrOppenheimer is ERC721A, Ownable, ERC2981ContractWideRoyalties {
 
         return ownedTokenIds;
     }
+    */
 
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         require(_exists(_tokenId), "ERC721Metadata: URI query for nonexistent token");
