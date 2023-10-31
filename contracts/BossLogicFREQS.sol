@@ -20,7 +20,7 @@ contract FREQS is ERC721A, Ownable, ERC2981ContractWideRoyalties {
         external 
         onlyOwner
     {
-        require(_to.length == _amount.length, "address/amount lenght mismatch");
+        require(_to.length == _amount.length, "address/amount mismatch");
         for (uint256 i; i < _to.length; ) {
             require(totalSupply() + _amount[i] <= 10000, "max supply hit");
             _mint(_to[i], _amount[i]);
