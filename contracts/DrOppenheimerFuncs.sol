@@ -8,13 +8,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ERC721A.sol";
 import "./ERC2981ContractWideRoyalties.sol";
 
-contract FREQS is ERC721A, Ownable, ERC2981ContractWideRoyalties {
+contract DrOppenheimer is ERC721A, Ownable, ERC2981ContractWideRoyalties {
     using Strings for uint256;
 
     
     string public baseTokenUri;
 
-    constructor() ERC721A("FREQS", "FREQS") {}
+    constructor() ERC721A("DrOppenheimer", "DrOppenheimer") {}
 
     mapping(address => uint256) public drops;
 
@@ -30,30 +30,35 @@ contract FREQS is ERC721A, Ownable, ERC2981ContractWideRoyalties {
         _;
     }
 
-    modifier isDroppable (address[] calldata _to) {
+    function isDroppable (address[] calldata _to)
+        internal
+        view
+        returns (bool)
+    {
         for (uint256 i; i < _to.length; ) {
             require(drops[_to[i]] == 0, "one or more wallets already droped"); 
             unchecked {
                 i++;
             }
         }
-        _;
+        return true;
     }
 
     function mintMany(address[] calldata _to, uint256[] calldata _amount) 
         external 
         onlyOwner
         isOverTotal(_amount)
-        isDroppable(_to)
     {
         require(_to.length == _amount.length, "address/amount lenght mismatch");
-        for (uint256 i; i < _to.length; ) {
-            _mint(_to[i], _amount[i]);
-            drops[_to[i]] += _amount[i];
-            unchecked {
-                i++;
+            if (isDroppable(_to)) {
+                for (uint256 i; i < _to.length; ) {
+                _mint(_to[i], _amount[i]);
+                drops[_to[i]] += _amount[i];
+                unchecked {
+                    i++;
+                }
             }
-        }
+        } 
     }
 
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {

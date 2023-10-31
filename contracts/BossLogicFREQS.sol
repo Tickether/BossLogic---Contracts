@@ -15,41 +15,15 @@ contract FREQS is ERC721A, Ownable, ERC2981ContractWideRoyalties {
     string public baseTokenUri;
 
     constructor() ERC721A("FREQS", "FREQS") {}
-
-    mapping(address => uint256) public drops;
-
-    modifier isOverTotal (uint256[] calldata _amount) {
-        uint256 totalAmount;
-        for (uint256 i; i < _amount.length; ) {
-            totalAmount += _amount[i];
-            unchecked {
-                i++;
-            }
-        }
-        require(totalSupply() + totalAmount <= 10000, "max supply hit");
-        _;
-    }
-
-    modifier isDroppable (address[] calldata _to) {
-        for (uint256 i; i < _to.length; ) {
-            require(drops[_to[i]] == 0, "one or more wallets already droped"); 
-            unchecked {
-                i++;
-            }
-        }
-        _;
-    }
-
+    
     function mintMany(address[] calldata _to, uint256[] calldata _amount) 
         external 
         onlyOwner
-        isOverTotal(_amount)
-        isDroppable(_to)
     {
         require(_to.length == _amount.length, "address/amount lenght mismatch");
         for (uint256 i; i < _to.length; ) {
+            require(totalSupply() + _amount[i] <= 10000, "max supply hit");
             _mint(_to[i], _amount[i]);
-            drops[_to[i]] += _amount[i];
             unchecked {
                 i++;
             }
